@@ -16,9 +16,11 @@ struct npcap_rmt_if
 
 char *iptos(u_long in);
 
+int npcap_getconfxml_internal(char *errbuf);
+
 int npcap_finddevs_internal(char* source, pcap_rmtauth* rmt_auth,npcap_if_t** alldevices,char* errbuf);
 
-int npcap_pcap_start();
+int npcap_pcap_start_internal(char* errbuf);
 
 namespace NCGPCAP{
 	extern pcap_if_t* local_if;

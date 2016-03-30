@@ -306,10 +306,30 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 			itemEle = ET.SubElement(PortablePortEle,'Item')
 			itemEle.text = portItem
 		MediaConfEle = ET.SubElement(PacCapConfEle,'MediaConfigure')
+		""" 先遍历，把本地media添加到最前面 """
 		for media in GLV.mediaList:
 			if media.mediaPosition == GLV.NPCAP_MEDIA_LOCAL:
 				MediaEle = ET.SubElement(MediaConfEle,'LocalMedia')
-			else:
+				for devItem in media.netIfList:
+					itemEle = ET.SubElement(MediaEle,'Item',{'ip':devItem.ip})
+					itemEle.text = devItem.name
+				RtspPortEle = ET.SubElement(MediaEle,'RtspPort')
+				RtspPortEle.text = media.rtspPort
+				UdpPortBaseEle = ET.SubElement(MediaEle,'UdpPortBase')
+				UdpPortBaseEle.text = media.udpPortBase
+				UdpPortNumEle = ET.SubElement(MediaEle,'UdpPortNum')
+				UdpPortNumEle.text = media.udpPortNum
+				RtspSendPortBaseEle = ET.SubElement(MediaEle,'RtspSendPortBase')
+				RtspSendPortBaseEle.text = media.rtspSendPortBase
+				RtspSendPortNumEle = ET.SubElement(MediaEle,'RtspSendPortNum')
+				RtspSendPortNumEle.text = media.rtspSendPortNum
+				RtspRecvPortBaseEle = ET.SubElement(MediaEle,'RtspRecvPortBase')
+				RtspRecvPortBaseEle.text = media.rtspRecvPortBase
+				RtspRecvPortNumEle = ET.SubElement(MediaEle,'RtspRecvPortNum')
+				RtspRecvPortNumEle.text = media.rtspRecvPortNum
+		""" 然后遍历写远程media """
+		for media in GLV.mediaList:
+			if media.mediaPosition != GLV.NPCAP_MEDIA_LOCAL:
 				MediaEle = ET.SubElement(MediaConfEle,'RemoteMedia')
 				ConnIpEle = ET.SubElement(MediaEle,'ConnectIp')
 				ConnIpEle.text = media.remoteInfo.ip
@@ -320,23 +340,23 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 				UserNameEle.text = media.remoteInfo.usrName
 				PwdEle = ET.SubElement(AuthEle,'PassWord')
 				PwdEle.text = media.remoteInfo.pwd
-			for devItem in media.netIfList:
-				itemEle = ET.SubElement(MediaEle,'Item',{'ip':devItem.ip})
-				itemEle.text = devItem.name
-			RtspPortEle = ET.SubElement(MediaEle,'RtspPort')
-			RtspPortEle.text = media.rtspPort
-			UdpPortBaseEle = ET.SubElement(MediaEle,'UdpPortBase')
-			UdpPortBaseEle.text = media.udpPortBase
-			UdpPortNumEle = ET.SubElement(MediaEle,'UdpPortNum')
-			UdpPortNumEle.text = media.udpPortNum
-			RtspSendPortBaseEle = ET.SubElement(MediaEle,'RtspSendPortBase')
-			RtspSendPortBaseEle.text = media.rtspSendPortBase
-			RtspSendPortNumEle = ET.SubElement(MediaEle,'RtspSendPortNum')
-			RtspSendPortNumEle.text = media.rtspSendPortNum
-			RtspRecvPortBaseEle = ET.SubElement(MediaEle,'RtspRecvPortBase')
-			RtspRecvPortBaseEle.text = media.rtspRecvPortBase
-			RtspRecvPortNumEle = ET.SubElement(MediaEle,'RtspRecvPortNum')
-			RtspRecvPortNumEle.text = media.rtspRecvPortNum
+				for devItem in media.netIfList:
+					itemEle = ET.SubElement(MediaEle,'Item',{'ip':devItem.ip})
+					itemEle.text = devItem.name
+				RtspPortEle = ET.SubElement(MediaEle,'RtspPort')
+				RtspPortEle.text = media.rtspPort
+				UdpPortBaseEle = ET.SubElement(MediaEle,'UdpPortBase')
+				UdpPortBaseEle.text = media.udpPortBase
+				UdpPortNumEle = ET.SubElement(MediaEle,'UdpPortNum')
+				UdpPortNumEle.text = media.udpPortNum
+				RtspSendPortBaseEle = ET.SubElement(MediaEle,'RtspSendPortBase')
+				RtspSendPortBaseEle.text = media.rtspSendPortBase
+				RtspSendPortNumEle = ET.SubElement(MediaEle,'RtspSendPortNum')
+				RtspSendPortNumEle.text = media.rtspSendPortNum
+				RtspRecvPortBaseEle = ET.SubElement(MediaEle,'RtspRecvPortBase')
+				RtspRecvPortBaseEle.text = media.rtspRecvPortBase
+				RtspRecvPortNumEle = ET.SubElement(MediaEle,'RtspRecvPortNum')
+				RtspRecvPortNumEle.text = media.rtspRecvPortNum
 		WorkingDirEle = ET.SubElement(PacCapConfEle,'WorkingDirectory')
 		WorkingDirEle.text = GLV.workingDir
 		CompressPathEle = ET.SubElement(root,'CompressPath')

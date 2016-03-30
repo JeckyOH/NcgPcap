@@ -90,7 +90,7 @@ NCGPCAP_API int npcap_setdevs();
  *
  * 
  */
-NCGPCAP_API int npcap_pcap_start();
+NCGPCAP_API int npcap_pcap_start(char* errbuf);
 
 NCGPCAP_API int npcap_pcap_stop();
 

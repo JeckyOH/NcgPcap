@@ -101,9 +101,14 @@ NCGPCAP_API int npcap_setdevs()
 	return NPCAP_SUCC;
 }
 
-NCGPCAP_API int npcap_pcap_start()
+NCGPCAP_API int npcap_pcap_start(char* errbuf)
 {
-	return NPCAP_SUCC;
+
+	if (npcap_getconfxml_internal(errbuf) == NPCAP_ERROR)
+	{
+		return NPCAP_ERROR;
+	}
+	return npcap_pcap_start_internal(errbuf);
 }
 
 NCGPCAP_API int npcap_pcap_stop()

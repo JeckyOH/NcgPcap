@@ -116,7 +116,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\include;..\..\include\winPcap"
+				AdditionalIncludeDirectories="..\..\include;..\..\include\winPcap;..\..\src\;..\..\src\public;..\..\src\public\xml"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NCGPCAP_EXPORTS;WPCAP;HAVE_REMOTE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -207,6 +207,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\NcgPcap_def.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npcap_config.h"
 				>
 			</File>
 			<File
