@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AddMediaDialog</class>
+ <widget class="QDialog" name="AddMediaDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>853</width>
+    <height>445</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>AddMedia</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>rsc/icon/mainWindow_icon.png</normaloff>rsc/icon/mainWindow_icon.png</iconset>
+  </property>
+  <widget class="QGroupBox" name="MediaLocationGroupBox">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>421</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>媒体网关位置</string>
+   </property>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>171</y>
+      <width>341</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <widget class="QLabel" name="InterfaceChoseDisplayStatic">
+       <property name="text">
+        <string>网络适配器：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="ChooseInterfaceBtn">
+       <property name="text">
+        <string>选择网络适配器</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QTextEdit" name="InterfaceChoseDisplayText"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QRadioButton" name="LocalMediaRadioBtn">
+    <property name="geometry">
+     <rect>
+      <x>43</x>
+      <y>151</y>
+      <width>95</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>本机媒体网关</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RemoteMediaRadioBtn">
+    <property name="geometry">
+     <rect>
+      <x>44</x>
+      <y>51</y>
+      <width>95</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>远程媒体网关</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>146</x>
+      <y>10</y>
+      <width>225</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="RemoteCapIpStatic">
+       <property name="text">
+        <string>IP地址：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLineEdit" name="RemoteCapIpEdit"/>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QLabel" name="RemoteCapPortStatic">
+       <property name="text">
+        <string>远程抓包端口：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLineEdit" name="RemoteCapPortEdit"/>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QLabel" name="RmtUsrNameStatic">
+       <property name="text">
+        <string>远程用户名：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLineEdit" name="RmtUsrNameEdit"/>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QLabel" name="RmtPwdStatic">
+       <property name="text">
+        <string>远程密码：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="RmtPwdEdit"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>30</y>
+     <width>371</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>媒体网关使用端口信息</string>
+   </property>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>27</y>
+      <width>261</width>
+      <height>241</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="RtspPortStatic">
+       <property name="text">
+        <string>RTSP端口：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLineEdit" name="RtspPortEdit"/>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QLabel" name="UdpPortBaseStatic">
+       <property name="text">
+        <string>UDP传输流开始端口：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLineEdit" name="UdpPortBaseEdit"/>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QLabel" name="UdpPortNumStatic">
+       <property name="text">
+        <string>UDP传输流端口数目：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLineEdit" name="UdpPortNumEdit"/>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QLabel" name="RtspRecvPortBaseStatic">
+       <property name="text">
+        <string>RTSP接收流开始端口：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="RtspRecvPortBaseEdit"/>
+     </item>
+     <item row="4" column="0" colspan="2">
+      <widget class="QLabel" name="RtspRecvPortNumStatic">
+       <property name="text">
+        <string>RTSP接收流端口数目：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QLineEdit" name="RtspRecvPortNumEdit"/>
+     </item>
+     <item row="5" column="0" colspan="2">
+      <widget class="QLabel" name="RtspSendPortBaseStatic">
+       <property name="text">
+        <string>RTSP发送流开始端口：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QLineEdit" name="RtspSendPortBaseEdit"/>
+     </item>
+     <item row="6" column="0" colspan="2">
+      <widget class="QLabel" name="RtspSendPortNumStatic">
+       <property name="text">
+        <string>RTSP发送流端口数目：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <widget class="QLineEdit" name="RtspSendPortNumEdit"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>344</y>
+     <width>571</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="OkBtn">
+      <property name="text">
+       <string>确认</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="NoBtn">
+      <property name="text">
+       <string>取消</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NcgPcap", "NcgPcap.vcproj", "{2E881E3C-B60A-4C0D-9504-A9B04B9F3163}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E881E3C-B60A-4C0D-9504-A9B04B9F3163}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2E881E3C-B60A-4C0D-9504-A9B04B9F3163}.Debug|Win32.Build.0 = Debug|Win32
+		{2E881E3C-B60A-4C0D-9504-A9B04B9F3163}.Release|Win32.ActiveCfg = Release|Win32
+		{2E881E3C-B60A-4C0D-9504-A9B04B9F3163}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
