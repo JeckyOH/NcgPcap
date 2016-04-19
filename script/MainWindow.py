@@ -32,27 +32,27 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 
 		""" 在子类重新设置窗口中的图标,防止因为父类用designer重新生成后图标路径改变导致的图标加载不成功 """
 		iconAddPort = QtGui.QIcon() #增加扩展端口
-		iconAddPort.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("../ui/rsc/icon/add_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		iconAddPort.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("./rsc/icon/add_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		self.AddPortablePortBtn.setIcon(iconAddPort)
 
 		iconDelPort = QtGui.QIcon() #删除扩展端口
-		iconDelPort.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("../ui/rsc/icon/delete_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		iconDelPort.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("./rsc/icon/delete_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		self.DelPortablePortBtn.setIcon(iconDelPort)
 
 		iconPro = QtGui.QIcon() #程序图标
-		iconPro.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("../ui/rsc/icon/mainWindow_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		iconPro.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("./rsc/icon/mainWindow_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		NcgPcapDialog.setWindowIcon(iconPro)
 
 		iconAddMedia = QtGui.QIcon() #增加媒体网关图标
-		iconAddMedia.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("../ui/rsc/icon/add_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		iconAddMedia.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("./rsc/icon/add_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		self.AddMediaBtn.setIcon(iconAddMedia)
 
 		iconModMedia = QtGui.QIcon() #修改媒体网关图标
-		iconModMedia.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("../ui/rsc/icon/mod_media.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		iconModMedia.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("./rsc/icon/mod_media.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		self.ModMediaBtn.setIcon(iconModMedia)
 
 		iconDelMedia = QtGui.QIcon() #删除媒体网关图标
-		iconDelMedia.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("../ui/rsc/icon/delete_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		iconDelMedia.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("./rsc/icon/delete_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		self.DelMediaBtn.setIcon(iconDelMedia)
 
 		""" 把日志模式的选择radio按钮放到一个buttonGroup里面，然后绑定上同一个单击槽 """
@@ -139,7 +139,7 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 	""" 对端IP编辑框的编辑槽 """
 	@QtCore.pyqtSlot('QString')
 	def on_OthIpEdit_textEdit(self,newText):
-		GLV.oppositeIp = newText
+		GLV.oppositeIp = str(newText)
 
 	""" 添加扩展端口按钮的单击槽 """
 	@QtCore.pyqtSlot()
@@ -259,6 +259,11 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 			return
 		GLV.workingDir = wd
 		self.saveConfigToXml()
+		errbuf = create_string_buffer(NPCAP_ERROR_BUFF_SIZE)
+		if npcap_pcap_start(errbuf) == NPCAP_ERROR:
+			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("開始抓包失败！\n")+errbuf.value)
+		return
+
 
 	@QtCore.pyqtSlot()
 	def on_AllCompressedPathScanBtn_Clicked(self):
@@ -295,7 +300,7 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		CascConfEle = ET.SubElement(PacCapConfEle,'CascadeConfigure')
 		DevListEle = ET.SubElement(CascConfEle,'DeviceList')
 		for devItem in GLV.cascNetIfList:
-			itemEle = ET.SubElement(DevListEle,'Item',{'ip':devItem.ip})
+			itemEle = ET.SubElement(DevListEle,'Item',{'ip':devItem.ip, 'netmask':devItem.netmask})
 			itemEle.text = devItem.name
 		SipPortEle = ET.SubElement(CascConfEle,'SipPort')
 		SipPortEle.text = GLV.cascSipPort
@@ -310,8 +315,9 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		for media in GLV.mediaList:
 			if media.mediaPosition == GLV.NPCAP_MEDIA_LOCAL:
 				MediaEle = ET.SubElement(MediaConfEle,'LocalMedia')
+				DevListEle = ET.SubElement(MediaEle,'DeviceList')
 				for devItem in media.netIfList:
-					itemEle = ET.SubElement(MediaEle,'Item',{'ip':devItem.ip})
+					itemEle = ET.SubElement(DevListEle,'Item',{'ip':devItem.ip, 'netmask':devItem.netmask})
 					itemEle.text = devItem.name
 				RtspPortEle = ET.SubElement(MediaEle,'RtspPort')
 				RtspPortEle.text = media.rtspPort
@@ -340,8 +346,9 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 				UserNameEle.text = media.remoteInfo.usrName
 				PwdEle = ET.SubElement(AuthEle,'PassWord')
 				PwdEle.text = media.remoteInfo.pwd
+				DevListEle = ET.SubElement(MediaEle,'DeviceList')
 				for devItem in media.netIfList:
-					itemEle = ET.SubElement(MediaEle,'Item',{'ip':devItem.ip})
+					itemEle = ET.SubElement(DevListEle,'Item',{'ip':devItem.ip, 'netmask':devItem.netmask})
 					itemEle.text = devItem.name
 				RtspPortEle = ET.SubElement(MediaEle,'RtspPort')
 				RtspPortEle.text = media.rtspPort
@@ -584,8 +591,8 @@ def getConfigFromExePath(processesPath):
 		initCascCaptureInterface()
 	else:
 		""" 如果没运行cascade，显示出来 """
-		GLV.cascSipPort = '未找到Cascade'
-		GLV.cascClientPort = '未找到Cascade'
+		GLV.cascSipPort = QtCore.QString.fromUtf8('未找到Cascade')
+		GLV.cascClientPort = QtCore.QString.fromUtf8('未找到Cascade')
 	if processesPath['mediaPath'] != "":
 		""" 创建全局的本地media类，并获取端口和适配器信息 """
 		initLocalMedia(processesPath['mediaPath']+"media.xml")

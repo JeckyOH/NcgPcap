@@ -47,6 +47,7 @@ class IfChooseWindow(Ui_InterfaceChooseDialog):
 				interfaceItem = GLV.DeviceItem()
 				interfaceItem.name = str(self.InterfaceChooseTable.item(row,2).text())
 				interfaceItem.ip = str(self.InterfaceChooseTable.item(row,1).text())
+				interfaceItem.netmask = str(self.InterfaceChooseTable.item(row,4).text())
 				self.interfaceList.append(interfaceItem)
 		self.dialog.accept()
 

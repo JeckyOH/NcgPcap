@@ -116,7 +116,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\include;..\..\include\winPcap;..\..\src\;..\..\src\public;..\..\src\public\xml"
+				AdditionalIncludeDirectories="..\..\include;..\..\include\winPcap;..\..\src\;..\..\src\public;..\..\src\public\xml;..\..\src\public\service"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NCGPCAP_EXPORTS;WPCAP;HAVE_REMOTE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -183,6 +183,14 @@
 				RelativePath="..\..\src\npcap_internal.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\npcap_PcapUnit.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npcap_pkt_handlers.cpp"
+				>
+			</File>
 			<Filter
 				Name="public"
 				>
@@ -215,6 +223,18 @@
 			</File>
 			<File
 				RelativePath="..\..\src\npcap_internal.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npcap_internal_def.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npcap_PCapUnit.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npcap_pkt_handlers.h"
 				>
 			</File>
 			<Filter

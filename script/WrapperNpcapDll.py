@@ -49,3 +49,11 @@ npcap_findalldevs.argtypes = [c_int, c_char_p, c_int, c_char_p, c_char_p, POINTE
 npcap_freealldevs = _lib.npcap_freealldevs
 npcap_freealldevs.restype = c_int
 npcap_freealldevs.argtypes = [POINTER(npcap_if_t)]
+
+npcap_pcap_start = _lib.npcap_pcap_start
+npcap_pcap_start.restype = c_int
+npcap_pcap_start.argtypes = [c_char_p]
+
+npcap_pcap_stop = _lib.npcap_pcap_stop
+npcap_pcap_stop.restype = c_int
+

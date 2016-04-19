@@ -1,9 +1,13 @@
-// 下列 ifdef 块是创建使从 DLL 导出更简单的
-// 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 NCGPCAP_EXPORTS
-// 符号编译的。在使用此 DLL 的
-// 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
-// NCGPCAP_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
-// 符号视为是被导出的。
+
+/*!
+ * \file NcgPcap.h 
+ *
+ * \brief NcgPcap.dll庫導出函數頭文件
+ *
+ * 該文件中聲明了所有的導出函數。
+ * 並在該函數中包含NcgPcap_def.h文件。構成外圍模塊。
+ */
+
 #ifndef _LIB_NCGPCAP_H_ 
 #define _LIB_NCGPCAP_H_
 
@@ -13,38 +17,11 @@
 #define NCGPCAP_API __declspec(dllimport)
 #endif
 
+#include "NcgPcap_def.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/*! 调用函数接口成功时返回值 */
-#define NPCAP_SUCC 0
-/*! 调用函数接口失败时返回值 */
-#define NPCAP_ERROR -1
-
-/*! 本机抓包选项，用于 npcap_findalldevs() 接口的第一个参数 */
-#define LOCAL_CAPTURE 0
-/*! 远程抓包选项，用于 npcap_findalldevs() 接口的第一个参数 */
-#define REMOTE_CAPTURE 1
-
-/*! errorBuf的大小：256BYTES */
-#define NPCAP_ERROR_BUFF_SIZE 256
-
-typedef struct npcap_if npcap_if_t;
-
-/*! 
- * \brief 网络设备接口结构体
- *
- * 该结构体用于向外部传递网络设备接口信息，以供进行抓包的接口选择。
- */
-struct npcap_if
-{
-	struct npcap_if *next;		///< 下一个接口的指针
-	char *name;					///< 接口名称
-	char *description;			///< 接口描述
-	char *ip;					///< IP地址
-	char *netmask;				///< 子网掩码
-};
 
 /*!
  * \brief 获取网络设备接口
@@ -63,7 +40,13 @@ struct npcap_if
  *			- <B>0，成功</B>
  *			- <B>-1,失败</B>，失败时可以通过检查errbuf参数得到错误信息
  */
-NCGPCAP_API int npcap_findalldevs(int iIsLocal,char* strRmtIp, int iRmtPort, char* strRmtUsrName, char* strRmtPwd, npcap_if_t **interfaces, char* errbuf);
+NCGPCAP_API int npcap_findalldevs( int iIsLocal
+								  , char* strRmtIp
+								  , int iRmtPort
+								  , char* strRmtUsrName
+								  , char* strRmtPwd
+								  , npcap_if_t **interfaces
+								  , char* errbuf);
 
 /*!
  * \brief 销毁网络设备接口
@@ -77,13 +60,6 @@ NCGPCAP_API int npcap_findalldevs(int iIsLocal,char* strRmtIp, int iRmtPort, cha
  *			- <B>-1,失败</B>，失败时可以通过检查errbuf参数得到错误信息
  */
 NCGPCAP_API int npcap_freealldevs(npcap_if_t* interfaces);
-
-/*!
- * \brief 设置抓包的网络设备
- *
- * 
- */
-NCGPCAP_API int npcap_setdevs();
 
 /*!
  * \brief 开始抓包

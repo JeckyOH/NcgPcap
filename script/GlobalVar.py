@@ -16,10 +16,13 @@ NPCAP_MEDIA_REMOTE = 1 #媒体网关在远程主机
 class DeviceItem:
 	name = "" #设备名称
 	ip="" #设备IP
+	netmask = "" #設備子網掩碼
 
-	def __init__(self, devName="", devIp=""):
+	def __init__(self, devName="", devIp="",devNetmask=""):
 		self.name = devName
 		self.ip = devIp
+		self.netmask = devNetmask
+
 
 """ 远程抓包时的远程主机表示 """
 class RemotePc:

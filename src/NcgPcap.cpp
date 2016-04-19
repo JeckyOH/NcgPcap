@@ -2,6 +2,7 @@
 //
 
 //#include "stdafx.h"
+#include "NcgPcap.h"
 #include "npcap_internal.h"
 
 #include <vector>
@@ -76,7 +77,7 @@ NCGPCAP_API int npcap_freealldevs(npcap_if_t* interfaces)
 		return NPCAP_SUCC;
 	}
 	
-	pcap_freealldevs(NCGPCAP::local_if);
+	pcap_freealldevs(NCGPCAP::g_local_if);
 	for (npcap_if_t* cap_iterface = interfaces; cap_iterface != NULL; )
 	{
 		if (cap_iterface->ip != NULL)
@@ -96,11 +97,6 @@ NCGPCAP_API int npcap_freealldevs(npcap_if_t* interfaces)
 	return NPCAP_SUCC;
 }
 
-NCGPCAP_API int npcap_setdevs()
-{
-	return NPCAP_SUCC;
-}
-
 NCGPCAP_API int npcap_pcap_start(char* errbuf)
 {
 
@@ -113,5 +109,6 @@ NCGPCAP_API int npcap_pcap_start(char* errbuf)
 
 NCGPCAP_API int npcap_pcap_stop()
 {
+	npcap_pcap_FreeAllPCapUnits();
 	return NPCAP_SUCC;
 }
