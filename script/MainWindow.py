@@ -10,11 +10,20 @@ import ctypes
 
 import os
 import time
+import zipfile
 try:
 	import xml.etree.cElementTree as ET
 except ImportError:
 	import xml.etree.ElementTree as ET
 
+
+
+def endWith(*endstring):
+	ends = endstring
+	def run(s):
+		f = map(s.endswith,ends)
+		if True in f: return s
+	return run
 
 """ 继承一下UI界面，执行一些自定义过程 """
 class NcgPcapMainWindow(Ui_NcgPcapDialog):
@@ -101,6 +110,12 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 
 		""" 绑定开始抓包按钮的单击槽 """
 		NcgPcapDialog.connect(self.StartCapBtn,QtCore.SIGNAL('clicked()'),self.on_StartCapBtn_Clicked)
+
+		""" 綁定結束抓包按鈕的單擊槽 """
+		NcgPcapDialog.connect(self.StopCapBtn,QtCore.SIGNAL('clicked()'),self.on_StopCapCtn_Clicked)
+
+		""" 綁定打包按鈕的單擊槽 """
+		NcgPcapDialog.connect(self.CompressBtn,QtCore.SIGNAL('clicked()'),self.on_AllCompressedStartBtn_Clicked)
 
 		""" 下面函数调用从全局变量中读取默认配置或者已存在配置，显示到界面 """
 		self.loadConfToMainWindow()
@@ -249,21 +264,25 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 	def on_StartCapBtn_Clicked(self):
 		""" “开始抓包”按钮的槽 """
 		import shutil
-		""" 还是要先把这些配置保存到文件里面 """
-		wd = os.getcwd() + '\\tmpDir'
-		if os.path.exists(wd):
-			shutil.rmtree(wd,True)
-		os.mkdir(wd)
-		if not os.path.exists(wd):
+		wdWithoutSuffix = os.getcwd() + "\\" + "NcgPcap_" + time.strftime('%Y%m%d%H%M%S',time.localtime())
+		if os.path.exists(wdWithoutSuffix):
+			shutil.rmtree(wdWithoutSuffix,True)
+		os.mkdir(wdWithoutSuffix)
+		if not os.path.exists(wdWithoutSuffix):
 			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("创建工作目录失败！"))
 			return
-		GLV.workingDir = wd
+		GLV.workingDir = wdWithoutSuffix
+		""" 还是要先把这些配置保存到文件里面 """
 		self.saveConfigToXml()
 		errbuf = create_string_buffer(NPCAP_ERROR_BUFF_SIZE)
 		if npcap_pcap_start(errbuf) == NPCAP_ERROR:
 			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("開始抓包失败！\n")+errbuf.value)
 		return
 
+	@QtCore.pyqtSlot()
+	def on_StopCapCtn_Clicked(self):
+		""" "結束抓包"按鈕的單擊槽 """
+		npcap_pcap_stop()
 
 	@QtCore.pyqtSlot()
 	def on_AllCompressedPathScanBtn_Clicked(self):
@@ -273,13 +292,36 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		fileDialog.setDefaultSuffix(QtCore.QString.fromUtf8(".zip"))
 		fileDialog.setFilter(QtCore.QString.fromUtf8("*.zip"))
 		fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-		#fileDialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
-		logPath = fileDialog.getSaveFileName(self.dialog,'选择打包路径','./',QtCore.QString.fromUtf8('压缩文件(*.zip);;全部文件(*.*)'),QtCore.QString.fromUtf8('压缩文件(*.zip)'))
-		if logPath == "":
+		fileDialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
+		compressPath = fileDialog.getSaveFileName(self.dialog,'选择打包路径','./',QtCore.QString.fromUtf8('压缩文件(*.zip);;全部文件(*.*)'),QtCore.QString.fromUtf8('压缩文件(*.zip)'))
+		if compressPath == "":
 			return
 		else:
-			GLV.logPath = logPath
-			self.LogPathEdit.setText(GLV.logPath)
+			GLV.compressPath = str(compressPath)
+			self.AllCompressedPathEdit.setText(QtCore.QString.fromUtf8(GLV.compressPath))
+
+	@QtCore.pyqtSlot()
+	def on_AllCompressedStartBtn_Clicked(self):
+		""" 開始打包按鈕的單擊槽 """
+		if os.path.exists(GLV.compressPath):
+			shutil.rmtree(GLV.compressPath,True)
+		zipWrite = zipfile.ZipFile(GLV.compressPath,'w',zipfile.ZIP_DEFLATED)
+		for capFile in os.listdir(GLV.workingDir):
+			zipWrite.write(os.path.join(GLV.workingDir,capFile),'packets/'+capFile)
+		list_file = os.listdir(GLV.logPath)
+		if GLV.logMod == GLV.NPCAP_LOG_ALL:
+			for i in list_file:
+				zipWrite.write(os.path.join(GLV.logPath,i),'log/'+i)
+		else:
+			a = endWith('.log')
+			f_file = filter(a,list_file)
+			for i in f_file:
+				zipWrite.write(os.path.join(GLV.logPath,i),'log/'+i)
+ 		zipWrite.close()
+
+
+
+		return
 
 	def saveConfigToXml(self):
 		""" 将页面配置保存到xml文件 """
@@ -621,9 +663,6 @@ if __name__ == "__main__":
 		GLV.oppositeIp = "" #默认使用空对端IP地址
 		GLV.logMod = GLV.NPCAP_LOG_NEWEST #默认打包最新日志
 		GLV.cascPortablePort = [] #默认没有扩展端口
-
-
-		
 
 	app = QtGui.QApplication(sys.argv)
 	"""NcgPcapWindow = QtGui.QDialog()

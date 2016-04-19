@@ -181,13 +181,14 @@ void	CPcapUnit::capture_thread_function()
 
 int		CPcapUnit::StopCapture(char* errbuf)
 {
-	if (m_bExist = true)
+	if (m_bExist == true)
 	{
 		return NPCAP_SUCC;
 	}
 
 	m_bExist = true;
 	WaitForSingleObject(m_hCaptureThread,INFINITE);
+	pcap_dump_close(m_pPktDumpHandle);
 	pcap_close(m_pCapHandle);
 	CloseHandle(m_hCaptureThread);
 

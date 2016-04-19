@@ -1,3 +1,7 @@
 doc
 doc/*
 *.ncb
+*.suo
+/prj/MSVC/Release
+*.rar
+*.user
