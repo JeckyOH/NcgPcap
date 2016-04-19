@@ -1,5 +1,5 @@
-doc
-doc/*
+/src/doc
+-/src/doc/*.jpg
 *.ncb
 *.suo
 /prj/MSVC/Release
