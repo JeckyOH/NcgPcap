@@ -329,15 +329,16 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		zipWrite = zipfile.ZipFile(GLV.compressPath,'w',zipfile.ZIP_DEFLATED)
 		for capFile in os.listdir(GLV.workingDir):
 			zipWrite.write(os.path.join(GLV.workingDir,capFile),'packets/'+capFile)
-		list_file = os.listdir(GLV.logPath)
-		if GLV.logMod == GLV.NPCAP_LOG_ALL:
-			for i in list_file:
-				zipWrite.write(os.path.join(GLV.logPath,i),'log/'+i)
-		else:
-			a = endWith('.log')
-			f_file = filter(a,list_file)
-			for i in f_file:
-				zipWrite.write(os.path.join(GLV.logPath,i),'log/'+i)
+		if os.path.exists(GLV.logPath) == True:
+			list_file = os.listdir(GLV.logPath)
+			if GLV.logMod == GLV.NPCAP_LOG_ALL:
+				for i in list_file:
+					zipWrite.write(os.path.join(GLV.logPath,i),'log/'+i)
+			else:
+				a = endWith('.log')
+				f_file = filter(a,list_file)
+				for i in f_file:
+					zipWrite.write(os.path.join(GLV.logPath,i),'log/'+i)
  		zipWrite.close()
  		self.CompressBtn.setEnabled(False)
  		if os.path.exists(GLV.workingDir):
