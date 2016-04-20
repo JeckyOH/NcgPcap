@@ -137,6 +137,7 @@ int		CPcapUnit::StartCapture(npcap_rmt_info*	rmt_info, char* errbuf)
 		{
 			strncpy(errbuf,pcap_geterr(m_pCapHandle),NPCAP_ERROR_BUFF_SIZE);
 			pcap_close(m_pCapHandle);
+			m_pCapHandle = NULL;
 			return NPCAP_ERROR;
 		}
 	}
@@ -145,6 +146,7 @@ int		CPcapUnit::StartCapture(npcap_rmt_info*	rmt_info, char* errbuf)
 	{
 		strncpy(errbuf,pcap_geterr(m_pCapHandle),NPCAP_ERROR_BUFF_SIZE);
 		pcap_close(m_pCapHandle);
+		m_pCapHandle = NULL;
 		return NPCAP_ERROR;
 	}
 
@@ -154,6 +156,7 @@ int		CPcapUnit::StartCapture(npcap_rmt_info*	rmt_info, char* errbuf)
 	{
 		_snprintf(errbuf,NPCAP_ERROR_BUFF_SIZE-1,"Create Thread Failed.InterfaceName:%s",m_strInterfaceName.c_str());
 		pcap_close(m_pCapHandle);
+		m_pCapHandle = NULL;
 		return NPCAP_ERROR;
 	}
 	
@@ -187,10 +190,22 @@ int		CPcapUnit::StopCapture(char* errbuf)
 	}
 
 	m_bExist = true;
-	WaitForSingleObject(m_hCaptureThread,INFINITE);
-	pcap_dump_close(m_pPktDumpHandle);
-	pcap_close(m_pCapHandle);
-	CloseHandle(m_hCaptureThread);
+	if (m_hCaptureThread != NPCAP_INVALID_THREAD)
+	{
+		WaitForSingleObject(m_hCaptureThread,INFINITE);
+	}
+	if (m_pPktDumpHandle != NULL)
+	{
+		pcap_dump_close(m_pPktDumpHandle);
+	}
+	if (m_pCapHandle !=NULL)
+	{
+		pcap_close(m_pCapHandle);
+	}
+	if (m_hCaptureThread != NPCAP_INVALID_THREAD)
+	{
+		CloseHandle(m_hCaptureThread);
+	}
 
 	return NPCAP_SUCC;
 }

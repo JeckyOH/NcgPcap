@@ -528,6 +528,10 @@ int npcap_pcap_MakeCascadePCapUnits(npcap_if_internal* interfaceInfo, char* errb
             {
                 portTmp = CONFIG::g_iClientPort;
             }
+			if (portTmp == -1 || portTmp == 0)
+			{
+				continue;
+			}
         }
         else
         {

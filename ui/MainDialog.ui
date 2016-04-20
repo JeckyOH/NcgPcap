@@ -108,28 +108,31 @@
        </item>
       </layout>
      </widget>
-     <widget class="QSplitter" name="splitter">
+     <widget class="QWidget" name="">
       <property name="geometry">
        <rect>
         <x>30</x>
         <y>18</y>
-        <width>331</width>
+        <width>321</width>
         <height>31</height>
        </rect>
       </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QRadioButton" name="NewestLogRadioBtn">
-       <property name="text">
-        <string>最新日志</string>
-       </property>
-      </widget>
-      <widget class="QRadioButton" name="AllLogRadioBtn">
-       <property name="text">
-        <string>全部日志</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QRadioButton" name="NewestLogRadioBtn">
+         <property name="text">
+          <string>最新日志</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="AllLogRadioBtn">
+         <property name="text">
+          <string>全部日志</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QGroupBox" name="PCapGroupBox">
@@ -608,7 +611,11 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="AllCompressedPathEdit"/>
+       <widget class="QLineEdit" name="AllCompressedPathEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="AllCompressedPathScanBtn">

@@ -11,6 +11,7 @@ import ctypes
 import os
 import time
 import zipfile
+import shutil
 try:
 	import xml.etree.cElementTree as ET
 except ImportError:
@@ -63,6 +64,11 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		iconDelMedia = QtGui.QIcon() #删除媒体网关图标
 		iconDelMedia.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("./rsc/icon/delete_media_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 		self.DelMediaBtn.setIcon(iconDelMedia)
+
+		""" 设置一些页面元素的可用不可用，或者可编辑不可编辑 """
+		self.StartCapBtn.setEnabled(True)
+		self.StopCapBtn.setEnabled(False)
+		self.CompressBtn.setEnabled(False)
 
 		""" 把日志模式的选择radio按钮放到一个buttonGroup里面，然后绑定上同一个单击槽 """
 		self.logModRadioBtnGroup = QtGui.QButtonGroup()
@@ -131,7 +137,7 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		fileDialog = QtGui.QFileDialog()
 		fileDialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
 		fileDialog.setOption(QtGui.QFileDialog.ShowDirsOnly)
-		logPath = fileDialog.getExistingDirectory(self.dialog,'选择日志文件夹','./')
+		logPath = fileDialog.getExistingDirectory(self.dialog,'Select Log Path',GLV.logPath)
 		if logPath == "":
 			return
 		else:
@@ -225,6 +231,7 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 			if self.HAVE_LOCAL_MEDIA == True:
 				QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("添加失败：\n 已经存在本地媒体网关"))
 				return
+			self.HAVE_LOCAL_MEDIA = True
 		GLV.mediaList.append(newMedia)
 		row = self.MediaTable.rowCount()
 		self.MediaTable.insertRow(row)
@@ -256,33 +263,47 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		if row < 0:
 			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("请先选择一行！"))
 			return
+		if GLV.mediaList[row].mediaPosition == GLV.NPCAP_MEDIA_LOCAL:
+			self.HAVE_LOCAL_MEDIA = False
 		del GLV.mediaList[row]
 		self.MediaTable.removeRow(row)
-		self.HAVE_LOCAL_MEDIA = False
 
 	@QtCore.pyqtSlot()
 	def on_StartCapBtn_Clicked(self):
 		""" “开始抓包”按钮的槽 """
-		import shutil
 		wdWithoutSuffix = os.getcwd() + "\\" + "NcgPcap_" + time.strftime('%Y%m%d%H%M%S',time.localtime())
-		if os.path.exists(wdWithoutSuffix):
-			shutil.rmtree(wdWithoutSuffix,True)
-		os.mkdir(wdWithoutSuffix)
-		if not os.path.exists(wdWithoutSuffix):
-			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("创建工作目录失败！"))
-			return
-		GLV.workingDir = wdWithoutSuffix
-		""" 还是要先把这些配置保存到文件里面 """
-		self.saveConfigToXml()
-		errbuf = create_string_buffer(NPCAP_ERROR_BUFF_SIZE)
-		if npcap_pcap_start(errbuf) == NPCAP_ERROR:
-			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("開始抓包失败！\n")+errbuf.value)
+		try:
+			if os.path.exists(wdWithoutSuffix):
+				shutil.rmtree(wdWithoutSuffix,True)
+			os.mkdir(wdWithoutSuffix)
+			if not os.path.exists(wdWithoutSuffix):
+				QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("创建工作目录失败！"))
+				return
+			GLV.workingDir = wdWithoutSuffix
+			""" 还是要先把这些配置保存到文件里面 """
+			self.saveConfigToXml()
+			errbuf = create_string_buffer(NPCAP_ERROR_BUFF_SIZE)
+			if npcap_pcap_start(errbuf) == NPCAP_ERROR:
+				QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("開始抓包失败！\n")+errbuf.value)
+				if os.path.exists(GLV.workingDir):
+					shutil.rmtree(GLV.workingDir,True)
+			else:
+				self.StopCapBtn.setEnabled(True)
+				self.StartCapBtn.setEnabled(False)
+		except Exception, e:
+			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("发生异常！\n"+str(e)))
 		return
 
 	@QtCore.pyqtSlot()
 	def on_StopCapCtn_Clicked(self):
 		""" "結束抓包"按鈕的單擊槽 """
-		npcap_pcap_stop()
+		try:
+			npcap_pcap_stop()
+			self.StartCapBtn.setEnabled(True)
+			self.StopCapBtn.setEnabled(False)
+			self.CompressBtn.setEnabled(True)
+		except Exception, e:
+			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("发生异常！\n"+e))
 
 	@QtCore.pyqtSlot()
 	def on_AllCompressedPathScanBtn_Clicked(self):
@@ -293,7 +314,7 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 		fileDialog.setFilter(QtCore.QString.fromUtf8("*.zip"))
 		fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
 		fileDialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
-		compressPath = fileDialog.getSaveFileName(self.dialog,'选择打包路径','./',QtCore.QString.fromUtf8('压缩文件(*.zip);;全部文件(*.*)'),QtCore.QString.fromUtf8('压缩文件(*.zip)'))
+		compressPath = fileDialog.getSaveFileName(self.dialog,'Select Pack Path',GLV.compressPath,QtCore.QString.fromUtf8('压缩文件(*.zip);;全部文件(*.*)'),QtCore.QString.fromUtf8('压缩文件(*.zip)'))
 		if compressPath == "":
 			return
 		else:
@@ -318,9 +339,9 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 			for i in f_file:
 				zipWrite.write(os.path.join(GLV.logPath,i),'log/'+i)
  		zipWrite.close()
-
-
-
+ 		self.CompressBtn.setEnabled(False)
+ 		if os.path.exists(GLV.workingDir):
+			shutil.rmtree(GLV.workingDir,True)
 		return
 
 	def saveConfigToXml(self):
@@ -456,8 +477,18 @@ class NcgPcapMainWindow(Ui_NcgPcapDialog):
 			self.NewestLogRadioBtn.setChecked(False)
 			self.AllLogRadioBtn.setChecked(True)
 		self.LogPathEdit.setText(GLV.logPath)
-		self.SipPortEdit.setText(GLV.cascSipPort)
-		self.PrivatePortEdit.setText(GLV.cascClientPort)
+		if GLV.cascSipPort == '-1':
+			self.SipPortEdit.setText(QtCore.QString.fromUtf8('未找到Cascade'))
+		elif GLV.cascSipPort == '0':
+			self.SipPortEdit.setText(QtCore.QString.fromUtf8('在XML中未找到'))
+		else:
+			self.SipPortEdit.setText(GLV.cascSipPort)
+		if GLV.cascClientPort == '-1':
+			self.PrivatePortEdit.setText(QtCore.QString.fromUtf8('未找到Cascade'))
+		elif GLV.cascClientPort == '0':
+			self.PrivatePortEdit.setText(QtCore.QString.fromUtf8('在XML中未找到'))
+		else:
+			self.PrivatePortEdit.setText(GLV.cascClientPort)
 		self.AllCompressedPathEdit.setText(GLV.compressPath)
 		self.specificCapCheckBox.setChecked(GLV.oppositeCap)
 		if GLV.oppositeCap == True:
@@ -515,20 +546,20 @@ def getPortFromCascaceXml(cascadexmlPath):
 	try:
 		tree = ET.parse(cascadexmlPath)
 	except Exception,e:
-		QMessageBox.information(None,"提示","读取cascade.xml出现错误："+e.str())
+		QMessageBox.information(None,"提示","读取cascade.xml出现错误："+e)
 		return
 	root = tree.getroot()
 	protocolEle = root.find('Protocol')
 	HkpProtoEle = protocolEle.find('Hkp')
 	ClientPort = HkpProtoEle.find('ClientPort').text
 	if ClientPort == "":
-		GLV.cascClientPort = 'XML中未找到'
+		GLV.cascClientPort = '0'#'XML中未找到'
 	else:
 		GLV.cascClientPort = ClientPort
 	DB33ProtoEle = protocolEle.find('DB33')
 	SipPort = DB33ProtoEle.find('SIPPort').text
 	if SipPort == "":
-		GLV.cascSipPort = 'XML中未找到'
+		GLV.cascSipPort = '0'#'XML中未找到'
 	else:
 		GLV.cascSipPort = SipPort
 	return
@@ -545,6 +576,7 @@ def initCascCaptureInterface():
 		interface = GLV.DeviceItem()
 		interface.name = cap_if.contents.name
 		interface.ip = cap_if.contents.ip
+		interface.netmask = cap_if.contents.netmask
 		cap_if = cap_if.contents.next
 		GLV.cascNetIfList.append(interface)
 	npcap_freealldevs(ifList)
@@ -554,49 +586,49 @@ def getPortFromMediaXml(mediaxmlPath,media):
 	try:
 		tree = ET.parse(mediaxmlPath)
 	except Exception,e:
-		QMessageBox.information(None,"提示","读取media.xml出现错误："+e.str())
+		QMessageBox.information(None,"提示","读取media.xml出现错误："+e)
 		return
 	root = tree.getroot()
 
 	rtspPort = root.find('RtspPort').text
 	if rtspPort == "":
-		media.rtspPort = 'XML中未找到'
+		media.rtspPort = '0'#'XML中未找到'
 	else:
 		media.rtspPort = rtspPort
 
 	udpPortBase = root.find('UdpPortBase').text
 	if udpPortBase == "":
-		media.udpPortBase = 'XML中未找到'
+		media.udpPortBase = '0'#'XML中未找到'
 	else:
 		media.udpPortBase = udpPortBase
 
 	udpPortNum = root.find('UdpPortNum').text
 	if udpPortNum == "":
-		media.udpPortNum = 'XML中未找到'
+		media.udpPortNum = '0'#'XML中未找到'
 	else:
 		media.udpPortNum = udpPortNum
 
 	rtspSendPortBase = root.find('RtspAgentPortBase').text
 	if rtspSendPortBase == "":
-		media.rtspSendPortBase = 'XML中未找到'
+		media.rtspSendPortBase = '0'#'XML中未找到'
 	else:
 		media.rtspSendPortBase = rtspSendPortBase
 
 	rtspSendPortNum = root.find('RtspAgentPortNum').text
 	if rtspSendPortNum == "":
-		media.rtspSendPortNum = 'XML中未找到'
+		media.rtspSendPortNum = '0'#'XML中未找到'
 	else:
 		media.rtspSendPortNum = rtspSendPortNum
 
 	rtspRecvPortBase = root.find('MediaClientPortBase').text
 	if rtspRecvPortBase == "":
-		media.rtspRecvPortBase = 'XML中未找到'
+		media.rtspRecvPortBase = '0'#'XML中未找到'
 	else:
 		media.rtspRecvPortBase = rtspRecvPortBase
 
 	rtspRecvPortNum = root.find('MediaClientPortNum').text
 	if rtspRecvPortNum == "":
-		media.rtspRecvPortNum = 'XML中未找到'
+		media.rtspRecvPortNum = '0'#'XML中未找到'
 	else:
 		media.rtspRecvPortNum = rtspRecvPortNum
 	return
@@ -629,12 +661,15 @@ def getConfigFromExePath(processesPath):
 		""" 如果运行了cascade，能确定log路径并从cascade.xml中读取端口信息 """
 		GLV.logPath = processesPath['cascPath'] + "log\\"
 		getPortFromCascaceXml(processesPath['cascPath'] + "cascade.xml")
-		""" 获取网络设备接口，默认全选 """
-		initCascCaptureInterface()
 	else:
 		""" 如果没运行cascade，显示出来 """
-		GLV.cascSipPort = QtCore.QString.fromUtf8('未找到Cascade')
-		GLV.cascClientPort = QtCore.QString.fromUtf8('未找到Cascade')
+		GLV.cascSipPort = '-1'
+		#QtCore.QString.fromUtf8('未找到Cascade')
+		GLV.cascClientPort = '-1'
+		#QtCore.QString.fromUtf8('未找到Cascade')
+
+	""" 获取网络设备接口，默认全选,不论是否运行了cascade都去获取 """
+	initCascCaptureInterface()
 	if processesPath['mediaPath'] != "":
 		""" 创建全局的本地media类，并获取端口和适配器信息 """
 		initLocalMedia(processesPath['mediaPath']+"media.xml")
@@ -645,24 +680,26 @@ def getConfigFromExePath(processesPath):
 if __name__ == "__main__":
 	import sys
 
+	""" 首先获取那些从cascade和media的配置文件中读取的 """
+	try:
+		""" 首先获取cascade和media的路径 """
+		processesPath = searchProcessPath()
+		""" 然后通过可执行文件路径获取xml配置文件信息 """
+		getConfigFromExePath(processesPath)
+	except Exception, e:
+		""" 跳出一个窗口吧，提示有错误 """
+		QtGui.QMessageBox.information(None,"提示","读取cascade.xml或media.xml出现错误："+e)
+
 	""" 启动程序看是否有存在的配置文件，先读取 """
-	if os.path.exists("./Npcap.cof.xml") == True:
-		""" 读取配置文件 """
-		pass
-	else:
-		try:
-			""" 首先获取cascade和media的路径 """
-			processesPath = searchProcessPath()
-			""" 然后通过可执行文件路径获取xml配置文件信息 """
-			getConfigFromExePath(processesPath)
-		except Exception, e:
-			""" 跳出一个窗口吧，提示有错误 """
-			QtGui.QMessageBox.information(None,"提示","读取cascade.xml出现错误："+e.str())
-		GLV.compressPath = os.getcwd() + "\\" + "NcgPcap_" + time.strftime('%Y%m%d%H%M%S',time.localtime())+".zip"
-		GLV.oppositeCap = False #默认不抓取指定对端的包，而是全抓
-		GLV.oppositeIp = "" #默认使用空对端IP地址
-		GLV.logMod = GLV.NPCAP_LOG_NEWEST #默认打包最新日志
-		GLV.cascPortablePort = [] #默认没有扩展端口
+	#if os.path.exists("./Npcap.cof.xml") == True:
+	#	""" 读取配置文件 """
+	#	pass
+	#else:
+	GLV.compressPath = os.getcwd() + "\\" + "NcgPcap_" + time.strftime('%Y%m%d%H%M%S',time.localtime())+".zip"
+	GLV.oppositeCap = False #默认不抓取指定对端的包，而是全抓
+	GLV.oppositeIp = "" #默认使用空对端IP地址
+	GLV.logMod = GLV.NPCAP_LOG_NEWEST #默认打包最新日志
+	GLV.cascPortablePort = [] #默认没有扩展端口
 
 	app = QtGui.QApplication(sys.argv)
 	"""NcgPcapWindow = QtGui.QDialog()

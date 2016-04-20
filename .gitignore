@@ -1,7 +1,8 @@
 /src/doc
--/src/doc/*.jpg
+- /src/doc/*.jpg
 *.ncb
 *.suo
 /prj/MSVC/Release
 *.rar
 *.user
+/.svn

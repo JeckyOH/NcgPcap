@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>853</width>
-    <height>445</height>
+    <width>896</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,140 +21,178 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>30</y>
-     <width>421</width>
-     <height>301</height>
+     <y>40</y>
+     <width>431</width>
+     <height>461</height>
     </rect>
    </property>
    <property name="title">
     <string>媒体网关位置</string>
    </property>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>171</y>
-      <width>341</width>
-      <height>111</height>
+      <x>20</x>
+      <y>270</y>
+      <width>391</width>
+      <height>171</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0">
-      <widget class="QLabel" name="InterfaceChoseDisplayStatic">
-       <property name="text">
-        <string>网络适配器：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="ChooseInterfaceBtn">
-       <property name="text">
-        <string>选择网络适配器</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QTextEdit" name="InterfaceChoseDisplayText"/>
-     </item>
-    </layout>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>2. 选择抓包网卡</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>351</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="InterfaceChoseDisplayStatic">
+        <property name="text">
+         <string>网络适配器：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="ChooseInterfaceBtn">
+        <property name="text">
+         <string>选择网络适配器</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QTextEdit" name="InterfaceChoseDisplayText"/>
+      </item>
+     </layout>
+    </widget>
    </widget>
-   <widget class="QRadioButton" name="LocalMediaRadioBtn">
+   <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>43</x>
-      <y>151</y>
-      <width>95</width>
-      <height>16</height>
+      <x>20</x>
+      <y>40</y>
+      <width>391</width>
+      <height>221</height>
      </rect>
     </property>
-    <property name="text">
-     <string>本机媒体网关</string>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>10</pointsize>
+     </font>
     </property>
-   </widget>
-   <widget class="QRadioButton" name="RemoteMediaRadioBtn">
-    <property name="geometry">
-     <rect>
-      <x>44</x>
-      <y>51</y>
-      <width>95</width>
-      <height>16</height>
-     </rect>
+    <property name="title">
+     <string>1. 配置媒体网关主机信息</string>
     </property>
-    <property name="text">
-     <string>远程媒体网关</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>146</x>
-      <y>10</y>
-      <width>225</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="RemoteCapIpStatic">
-       <property name="text">
-        <string>IP地址：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QLineEdit" name="RemoteCapIpEdit"/>
-     </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QLabel" name="RemoteCapPortStatic">
-       <property name="text">
-        <string>远程抓包端口：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLineEdit" name="RemoteCapPortEdit"/>
-     </item>
-     <item row="2" column="0" colspan="2">
-      <widget class="QLabel" name="RmtUsrNameStatic">
-       <property name="text">
-        <string>远程用户名：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLineEdit" name="RmtUsrNameEdit"/>
-     </item>
-     <item row="3" column="0" colspan="2">
-      <widget class="QLabel" name="RmtPwdStatic">
-       <property name="text">
-        <string>远程密码：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QLineEdit" name="RmtPwdEdit"/>
-     </item>
-    </layout>
+    <widget class="QRadioButton" name="LocalMediaRadioBtn">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>180</y>
+       <width>95</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>本机媒体网关</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="RemoteMediaRadioBtn">
+     <property name="geometry">
+      <rect>
+       <x>31</x>
+       <y>70</y>
+       <width>95</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>远程媒体网关</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>133</x>
+       <y>29</y>
+       <width>241</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="RemoteCapIpStatic">
+        <property name="text">
+         <string>IP地址：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="RemoteCapIpEdit"/>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="RemoteCapPortStatic">
+        <property name="text">
+         <string>远程抓包端口：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="RemoteCapPortEdit"/>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="RmtUsrNameStatic">
+        <property name="text">
+         <string>远程用户名：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="RmtUsrNameEdit"/>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLabel" name="RmtPwdStatic">
+        <property name="text">
+         <string>远程密码：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="RmtPwdEdit"/>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>480</x>
      <y>30</y>
-     <width>371</width>
-     <height>301</height>
+     <width>381</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="title">
-    <string>媒体网关使用端口信息</string>
+    <string>3. 配置媒体网关使用端口信息</string>
    </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>40</x>
       <y>27</y>
-      <width>261</width>
+      <width>301</width>
       <height>241</height>
      </rect>
     </property>
@@ -235,13 +273,13 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>344</y>
-     <width>571</width>
-     <height>41</height>
+     <x>570</x>
+     <y>350</y>
+     <width>151</width>
+     <height>131</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QPushButton" name="OkBtn">
       <property name="text">

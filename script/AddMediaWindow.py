@@ -86,6 +86,9 @@ class AddMediaWindow(Ui_AddMediaDialog):
 	@QtCore.pyqtSlot()
 	def on_OkBtn_Clicked(self):
 		""" 确认按钮的单击槽 """
+		if len(self.media.netIfList) == 0:
+			QtGui.QMessageBox.information(None,QtCore.QString.fromUtf8("提示"),QtCore.QString.fromUtf8("请选择网络适配器！"))
+			return
 		self.media.rtspPort = str(self.RtspPortEdit.text())
 		self.media.udpPortBase = str(self.UdpPortBaseEdit.text())
 		self.media.udpPortNum = str(self.UdpPortNumEdit.text())
